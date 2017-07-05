@@ -115,7 +115,7 @@ TcpSocket.prototype.connect = function(options, callback) : TcpSocket {
 
   if (options.timeout) {
     this.setTimeout(options.timeout);
-  } else if (this._timeout) {
+  } else if (this._timeout && this._timeout.msecs) {
     this._activeTimer(this._timeout.msecs);
   }
 
@@ -309,7 +309,7 @@ TcpSocket.prototype._onConnection = function(info: { id: number, address: { port
 TcpSocket.prototype._onData = function(data: string): void {
   this._debug('received', 'data');
 
-  if (this._timeout) {
+  if (this._timeout && this._timeout.msecs) {
     this._activeTimer(this._timeout.msecs);
   }
 
@@ -375,7 +375,7 @@ TcpSocket.prototype._write = function(buffer: any, encoding: ?String, callback: 
   }
 
   Sockets.write(this._id, str, function(err) {
-    if (self._timeout) {
+    if (self._timeout && this._timeout.msecs) {
       self._activeTimer(self._timeout.msecs);
     }
 
