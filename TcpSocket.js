@@ -183,7 +183,7 @@ TcpSocket.prototype._activeTimer = function(msecs, wrapper) {
 };
 
 TcpSocket.prototype._clearTimeout = function() {
-  if (this._timeout) {
+  if (this._timeout && this._timeout.handle) {
     clearTimeout(this._timeout.handle);
     this._timeout = null;
   }
