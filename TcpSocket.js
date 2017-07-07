@@ -349,16 +349,11 @@ TcpSocket.prototype.write = function(chunk, encoding, cb) {
     throw new TypeError(
       'Invalid data, chunk must be a string or buffer, not ' + typeof chunk);
   }
-  if (this._state !== STATE.CONNECTED) {
-    throw new Error('Trying to write to closed socket');
+  try {
+    return stream.Duplex.prototype.write.apply(this, arguments);
   }
-  else {
-    try {
-      return stream.Duplex.prototype.write.apply(this, arguments);
-    }
-    catch (ex) {
-      throw new Error('Socket write failed');
-    }
+  catch (ex) {
+    throw new Error('Socket write failed');
   }
 };
 
@@ -366,7 +361,10 @@ TcpSocket.prototype._write = function(buffer: any, encoding: ?String, callback: 
   var self = this;
 
   if (this._state === STATE.DISCONNECTED) {
-    throw new Error('Socket is not connected.');
+    //throw new Error('Socket is not connected.');
+    err = normalizeError(new Error('Socket is not connected'));
+    self._debug('socket not connected', err);
+    return callback(err);
   } else if (this._state === STATE.CONNECTING) {
     // we're ok, GCDAsyncSocket handles queueing internally
   }
