@@ -362,8 +362,8 @@ TcpSocket.prototype._write = function(buffer: any, encoding: ?String, callback: 
 
   if (this._state === STATE.DISCONNECTED) {
     //throw new Error('Socket is not connected.');
-    err = normalizeError('Socket is not connected!');
-    self._debug('socket not connected!', err);
+    err = normalizeError('Socket Is Not Connected!');
+    self._debug('socket Is Not connected!', err);
     return callback(err);
   } else if (this._state === STATE.CONNECTING) {
     // we're ok, GCDAsyncSocket handles queueing internally
@@ -411,7 +411,7 @@ function setDisconnected(socket: TcpSocket, hadError: boolean): void {
 
   socket._unregisterEvents();
   socket._state = STATE.DISCONNECTED;
-  socket.emit('close', hadError);
+  //socket.emit('close', hadError);
 }
 
 function normalizeError(err) {
