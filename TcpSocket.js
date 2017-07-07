@@ -349,8 +349,17 @@ TcpSocket.prototype.write = function(chunk, encoding, cb) {
     throw new TypeError(
       'Invalid data, chunk must be a string or buffer, not ' + typeof chunk);
   }
-
-  return stream.Duplex.prototype.write.apply(this, arguments);
+  if (this._state !== STATE.CONNECTED) {
+    throw new Error('Trying to write to closed socket');
+  }
+  else {
+    try {
+      return stream.Duplex.prototype.write.apply(this, arguments);
+    }
+    catch (ex) {
+      throw new Error('Socket write failed');
+    }
+  }
 };
 
 TcpSocket.prototype._write = function(buffer: any, encoding: ?String, callback: ?(err: ?Error) => void) : boolean {
